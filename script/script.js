@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', () => {
             return { timeRemaining, hours, minutes, seconds };
         };
 
-        const timerId = setInterval(() => {
+        const timerWrite = () => {
             const timer = getTimerRemaining();
 
             if (String(timer.hours).length === 1) {
@@ -43,11 +43,19 @@ window.addEventListener('DOMContentLoaded', () => {
                 timerHours.textContent = '00';
                 timerMinutes.textContent = '00';
                 timerSeconds.textContent = '00';
+
+            }
+        };
+        const timerId = setInterval(() => {
+            timerWrite();
+            const timer = getTimerRemaining();
+            if (timer.timeRemaining <= 0) {
                 clearInterval(timerId);
             }
         }, 1000);
+        timerWrite();
 
     };
-    countTimer('22 february 2021');
 
+    countTimer('24 february 2021');
 });
