@@ -89,11 +89,33 @@ window.addEventListener('DOMContentLoaded', () => {
     const togglePopup = () => {
         const popup = document.querySelector('.popup'),
             popupBtn = document.querySelectorAll('.popup-btn'),
-            popupClose = document.querySelector('.popup-close');
+            popupClose = document.querySelector('.popup-close'),
+            popupContent = document.querySelector('.popup-content');
+        let modalAnimate;
+        let count = -50;
+
+        const popupAnimate = () => {
+
+            modalAnimate = requestAnimationFrame(popupAnimate);
+
+            
+            count++; 
+
+            if (+count < 10){
+                popupContent.style.top = +count + '%';
+            } else {
+                cancelAnimationFrame(modalAnimate);
+                count = -50;
+            }
+            
+            console.log(count);
+        }
 
         popupBtn.forEach(elem => {
             elem.addEventListener('click', () => {
                 popup.style.display = 'block';
+                popupContent.style.top = '-50%';
+                modalAnimate = requestAnimationFrame(popupAnimate);
             });
         });
         popupClose.addEventListener('click', () => {
