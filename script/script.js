@@ -94,9 +94,15 @@ window.addEventListener('DOMContentLoaded', () => {
         let modalAnimate;
         let count = -50;
 
+        console.dir(document)
+
         const popupAnimate = () => {
 
+            
+
+           
             modalAnimate = requestAnimationFrame(popupAnimate);
+   
 
             
             count++; 
@@ -113,9 +119,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
         popupBtn.forEach(elem => {
             elem.addEventListener('click', () => {
-                popup.style.display = 'block';
-                popupContent.style.top = '-50%';
-                modalAnimate = requestAnimationFrame(popupAnimate);
+                if (document.documentElement.clientWidth < 768) {
+                    popup.style.display = 'block'; 
+                } else {
+                    popup.style.display = 'block';                    
+                    popupContent.style.top = '-50%';
+                    modalAnimate = requestAnimationFrame(popupAnimate);
+                }
             });
         });
         popupClose.addEventListener('click', () => {
