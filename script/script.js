@@ -350,7 +350,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     regExp2 = /\s{2,}/g,
                     regExp3 = /\-{2,}/g;
 
-                target.value = target.value.replace(regExp1, ' ');
+                target.value = target.value.replace(regExp1, '');
                 target.value = target.value.replace(regExp2, ' ');
                 target.value = target.value.replace(regExp3, '-');
                 if (target.matches('input[name="user_name"]')) {
