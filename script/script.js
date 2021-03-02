@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 window.addEventListener('DOMContentLoaded', () => {
 
 
@@ -324,25 +325,47 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //обратная связь
 
-    const connect = () => {
-        const footerForm = document.querySelector('.footer-form');
+    const handler = () => {
 
+        const inputs = document.querySelectorAll('input');
 
-        footerForm.addEventListener('input', e => {
+        document.addEventListener('input', e => {
             const target = e.target;
-            if (target.matches('#form2-name') || target.matches('#form2-message')) {
-                target.value = target.value.replace(/[^а-яА-яё-\s]/ig, '');
+            if (target.matches('input[name="user_name"]') || target.matches('input[name="user_message"]')) {
+                target.value = target.value.replace(/[^а-яА-Яё-\s]/ig, '');
             }
-            if (target.matches('#form2-email')) {
-                target.value = target.value.replace(/[^a-zA-Z_][^-.!~`*@]/ig, '');
+            if (target.matches('input[name="user_email"]')) {
+                // eslint-disable-next-line no-useless-escape
+                target.value = target.value.replace(/[^a-zA-Z_\-\.\!\~\`\d\*\@]/ig, '');
             }
-            if (target.matches('#form2-phone')) {
-                target.value = target.value.replace(/[\D][^()-]/ig, '');
+            if (target.matches('input[name="user_phone"]')) {
+                target.value = target.value.replace(/[^\d\()\-\+]/ig, '');
             }
         });
 
+        inputs.forEach(elem => {
+            elem.addEventListener('blur', e => {
+                const target = e.target,
+                    regExp1 = /^[\s\-]+|[\s\-]+$/g,
+                    regExp2 = /\s{2,}/g,
+                    regExp3 = /\-{2,}/g;
+
+                target.value = target.value.replace(regExp1, ' ');
+                target.value = target.value.replace(regExp2, ' ');
+                target.value = target.value.replace(regExp3, '-');
+                if (target.matches('input[name="user_name"]')) {
+                    target.value = target.value.replace(/(^|\s)\S/ig, match => match.toUpperCase());
+                }
+
+                return;
+            });
+
+        });
+
+
+
     };
 
-    connect();
+    handler();
 });
 
