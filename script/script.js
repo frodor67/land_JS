@@ -57,7 +57,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     };
 
-    countTimer('24 february 2021');
+    countTimer('26 february 2022');
 
     // menu
     const toggleMenu = () => {
@@ -186,8 +186,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
         const addDots = slide => {
-            slide.forEach(elem => {
-                console.log(elem);
+            slide.forEach(() => {
                 const li = document.createElement('li');
                 li.classList.add('dot');
                 portfolioDots.append(li);
@@ -277,6 +276,73 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-
     slider();
+
+    //калькулятор
+
+    const calc = () => {
+        const calcItem = document.querySelectorAll('.calc-item');
+
+        calcItem.forEach(item => {
+            item.addEventListener('input', () => {
+                item.value = item.value.replace(/\D/g, '');
+            });
+        });
+
+    };
+
+    calc();
+
+    //команда
+
+    const command = () => {
+        const commandPhoto = document.querySelectorAll('.command__photo');
+
+        commandPhoto.forEach(item => {
+            let dataImg;
+
+            item.addEventListener('mouseover', e => {
+                const target = e.target;
+                dataImg = target.src;
+                console.log(dataImg);
+                if (target.classList.contains('command__photo')) {
+                    target.src = target.dataset.img;
+                }
+
+            });
+
+            item.addEventListener('mouseout', e => {
+                const target = e.target;
+                if (target.classList.contains('command__photo')) {
+                    target.src = dataImg;
+                }
+            });
+        });
+    };
+
+    command();
+
+    //обратная связь
+
+    const connect = () => {
+        const footerForm = document.querySelector('.footer-form');
+
+
+        footerForm.addEventListener('input', e => {
+            const target = e.target;
+            if (target.matches('#form2-name') || target.matches('#form2-message')) {
+                target.value = target.value.replace(/[^а-яА-яё-\s]/ig, '');
+            }
+            if (target.matches('#form2-email')) {
+                target.value = target.value.replace(/[^a-zA-Z_][^-.!~`*@]/ig, '');
+            }
+            if (target.matches('#form2-phone')) {
+                target.value = target.value.replace(/[\D][^()-]/ig, '');
+            }
+        });
+
+    };
+
+    connect();
 });
+
