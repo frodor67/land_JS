@@ -331,15 +331,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('input', e => {
             const target = e.target;
-            if (target.matches('input[name="user_name"]') || target.matches('input[name="user_message"]')) {
+            if (target.matches('input[name="user_name"]')) {
                 target.value = target.value.replace(/[^а-яА-Яё-\s]/ig, '');
+            }
+            if (target.matches('input[name="user_message"]')) {
+                console.log(target.value);
+                target.value = target.value.replace(/[^а-яА-Яё-\s\!\,\.\:\"\;\?]/ig, '');
             }
             if (target.matches('input[name="user_email"]')) {
                 // eslint-disable-next-line no-useless-escape
                 target.value = target.value.replace(/[^a-zA-Z_\-\.\!\~\`\d\*\@]/ig, '');
             }
             if (target.matches('input[name="user_phone"]')) {
-                target.value = target.value.replace(/[^\d\()\-\+]/ig, '');
+                target.value = target.value.replace(/[^\d\()\-\+]/g, '');
             }
         });
 
@@ -355,6 +359,14 @@ window.addEventListener('DOMContentLoaded', () => {
                 target.value = target.value.replace(regExp3, '-');
                 if (target.matches('input[name="user_name"]')) {
                     target.value = target.value.replace(/(^|\s)\S/ig, match => match.toUpperCase());
+                }
+                if (target.matches('input[name="user_phone"]')) {
+                    const targetStr = target.value.toString().length;
+                    console.log(targetStr);
+                    //(11 <= targetStr <= 13)
+                    if ((targetStr !== 11) && (targetStr !== 13)) {
+                        target.value = '';
+                    }
                 }
 
                 return;
