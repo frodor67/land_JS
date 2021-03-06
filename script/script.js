@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 seconds = Math.floor(timeRemaining % 60),
                 minutes = Math.floor((timeRemaining / 60) % 60),
                 hours = Math.floor(timeRemaining / 60 / 60);
-                //day = Math.floor(timeRemaining / 60 / 60 / 24);
+            //day = Math.floor(timeRemaining / 60 / 60 / 24);
             return { timeRemaining, hours, minutes, seconds };
         };
 
@@ -313,7 +313,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 total = 0;
             }
 
-            
+
 
             totalValue.textContent = Math.floor(total);
         };
@@ -346,6 +346,74 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     calc();
+
+
+    //send-ajax-form
+
+    const sendForm = () => {
+        const errorMsg = 'Что-то пошло не так...',
+            loadMsg = 'Загрузка...',
+            successMsg = 'Спасибо! мы скоро с вами свяжемся!';
+
+        const forms = document.querySelectorAll('form[name="user_form"]'),
+            inputs = document.querySelectorAll('input');
+
+        const statusMsg = document.createElement('div');
+        statusMsg.textContent = 'Тут будет сообщение';
+        statusMsg.style.cssText = 'color: #ffffff;';
+
+        forms.forEach(item => {
+            item.addEventListener('submit', (event) => {
+                event.preventDefault();
+                item.appendChild(statusMsg);
+                statusMsg.textContent = loadMsg;
+                const formData = new FormData(item);
+                let body = {};
+                formData.forEach((val, key) => {
+                    body[key] = val;
+                });
+                postData(body, () => {
+                    statusMsg.textContent = successMsg;
+                    clearInputs();
+
+                }, (error) => {
+                    statusMsg.textContent = errorMsg;
+                    console.error(error);
+                });
+
+            });
+        });
+
+        const postData = (body, outputData, errorData) => {
+            const request = new XMLHttpRequest();
+            request.addEventListener('readystatechange', () => {
+                if (request.readyState !== 4) {
+                    return;
+                }
+                if (request.status === 200) {
+                    outputData();
+                } else {
+                    errorData(request.status);
+                }
+            });
+
+            request.open('POST', './server.php');
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send(JSON.stringify(body));
+
+        };
+
+        const clearInputs = () => {
+            inputs.forEach(item => {
+                item.value = '';
+            });
+        }
+
+    };
+
+    sendForm();
+
+
 
     //команда
 
@@ -385,18 +453,18 @@ window.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('input', e => {
             const target = e.target;
             if (target.matches('input[name="user_name"]')) {
-                target.value = target.value.replace(/[^а-яА-Яё-\s]/ig, '');
+                target.value = target.value.replace(/[^а-яА-Яё\s]/ig, '');
             }
             if (target.matches('input[name="user_message"]')) {
                 console.log(target.value);
-                target.value = target.value.replace(/[^а-яА-Яё-\s\!\,\.\:\"\;\?]/ig, '');
+                target.value = target.value.replace(/[^а-яА-Яё-\s\d\!\,\.\:\"\;\?]/ig, '');
             }
             if (target.matches('input[name="user_email"]')) {
                 // eslint-disable-next-line no-useless-escape
                 target.value = target.value.replace(/[^a-zA-Z_\-\.\!\~\`\d\*\@]/ig, '');
             }
             if (target.matches('input[name="user_phone"]')) {
-                target.value = target.value.replace(/[^\d\()\-\+]/g, '');
+                target.value = target.value.replace(/[^\d\+]/g, '');
             }
         });
 
@@ -417,7 +485,8 @@ window.addEventListener('DOMContentLoaded', () => {
                     const targetStr = target.value.toString().length;
                     console.log(targetStr);
                     //(11 <= targetStr <= 13)
-                    if ((targetStr !== 11) && (targetStr !== 13)) {
+                    // ((targetStr !== 11) && (targetStr !== 13))
+                    if (targetStr >= 14) {
                         target.value = '';
                     }
                 }
@@ -433,4 +502,3 @@ window.addEventListener('DOMContentLoaded', () => {
 
     handler();
 });
-
