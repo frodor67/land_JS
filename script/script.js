@@ -363,12 +363,12 @@ window.addEventListener('DOMContentLoaded', () => {
         statusMsg.style.cssText = 'color: #ffffff;';
 
         forms.forEach(item => {
-            item.addEventListener('submit', (event) => {
+            item.addEventListener('submit', event => {
                 event.preventDefault();
                 item.appendChild(statusMsg);
                 statusMsg.textContent = loadMsg;
                 const formData = new FormData(item);
-                let body = {};
+                const body = {};
                 formData.forEach((val, key) => {
                     body[key] = val;
                 });
@@ -376,7 +376,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     statusMsg.textContent = successMsg;
                     clearInputs();
 
-                }, (error) => {
+                }, error => {
                     statusMsg.textContent = errorMsg;
                     console.error(error);
                 });
@@ -407,7 +407,7 @@ window.addEventListener('DOMContentLoaded', () => {
             inputs.forEach(item => {
                 item.value = '';
             });
-        }
+        };
 
     };
 
