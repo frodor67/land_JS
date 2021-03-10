@@ -58,7 +58,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     };
 
-    countTimer('26 february 2022');
+    countTimer('10 march 2021');
 
     // menu
     const toggleMenu = () => {
@@ -100,11 +100,27 @@ window.addEventListener('DOMContentLoaded', () => {
                 popupContent.style.top = +count + '%';
             } else {
                 cancelAnimationFrame(modalAnimate);
-                count = -50;
+                //count = -50;
             }
-
-            console.log(count);
         };
+
+        const popupAnimateReverse = () => {
+
+            modalAnimate = requestAnimationFrame(popupAnimate);
+
+            count--;
+
+            if (+count > -50) {
+                popupContent.style.top = +count + '%';
+            } else {
+                cancelAnimationFrame(modalAnimate);
+            }
+        };
+
+        if (count === 10) {
+            popupAnimateReverse();
+        }
+
 
         popupBtn.forEach(elem => {
             elem.addEventListener('click', () => {
@@ -122,10 +138,12 @@ window.addEventListener('DOMContentLoaded', () => {
             let target = event.target;
             if (target.classList.contains('popup-close')) {
                 popup.style.display = 'none';
+                count = -50;
             } else {
                 target = target.closest('.popup-content');
                 if (!target) {
                     popup.style.display = 'none';
+                    count = -50;
                 }
             }
         });
@@ -314,23 +332,20 @@ window.addEventListener('DOMContentLoaded', () => {
             }
 
 
-
             totalValue.textContent = Math.floor(total);
         };
 
         calcBlock.addEventListener('change', e => {
             const target = e.target;
 
-            // if (target.matches('.calc-type') || target.matches('.calc-square') ||
-            // target.matches('.calc-day') || target.matches('.calc-count')) {
-
-            // }
-
-            // if (target === calcType || target === calcSquare || target === calcDay || target === calcCount) {
-
-            // }
             if (target.matches('select') || target.matches('input')) {
                 countSum();
+            }
+
+            if (target.value === '') {
+                calcItem.forEach(item => {
+                    item.value = '';
+                });
             }
 
         });
@@ -356,33 +371,11 @@ window.addEventListener('DOMContentLoaded', () => {
             successMsg = 'Спасибо! мы скоро с вами свяжемся!';
 
         const forms = document.querySelectorAll('form[name="user_form"]'),
-            inputs = document.querySelectorAll('input');
+            inputs = document.querySelectorAll('input'),
+            statusMsg = document.createElement('div');
 
-        const statusMsg = document.createElement('div');
         statusMsg.textContent = 'Тут будет сообщение';
         statusMsg.style.cssText = 'color: #ffffff;';
-
-        forms.forEach(item => {
-            item.addEventListener('submit', event => {
-                event.preventDefault();
-                item.appendChild(statusMsg);
-                statusMsg.textContent = loadMsg;
-                const formData = new FormData(item);
-                const body = {};
-                formData.forEach((val, key) => {
-                    body[key] = val;
-                });
-                postData(body, () => {
-                    statusMsg.textContent = successMsg;
-                    clearInputs();
-
-                }, error => {
-                    statusMsg.textContent = errorMsg;
-                    console.error(error);
-                });
-
-            });
-        });
 
         const postData = (body, outputData, errorData) => {
             const request = new XMLHttpRequest();
@@ -396,11 +389,9 @@ window.addEventListener('DOMContentLoaded', () => {
                     errorData(request.status);
                 }
             });
-
             request.open('POST', './server.php');
             request.setRequestHeader('Content-Type', 'application/json');
             request.send(JSON.stringify(body));
-
         };
 
         const clearInputs = () => {
@@ -409,11 +400,42 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         };
 
+        const closePopup = () => {
+            const popup = document.querySelector('.popup');
+            popup.style = 'display: none';
+        };
+
+        forms.forEach(item => {
+            item.addEventListener('submit', event => {
+                event.preventDefault();
+                item.appendChild(statusMsg);
+                statusMsg.textContent = loadMsg;
+                const formData = new FormData(item);
+                const body = {};
+                formData.forEach((val, key) => {
+                    body[key] = val;
+                });
+                postData(body, () => {
+                    statusMsg.textContent = successMsg;
+                    setTimeout(() => {
+                        statusMsg.textContent = '';
+                        closePopup();
+                    }, 3000);
+                    clearInputs();
+
+                }, error => {
+                    statusMsg.textContent = errorMsg;
+                    setTimeout(() => {
+                        statusMsg.textContent = '';
+                    }, 3000);
+                    console.error(error);
+                });
+
+            });
+        });
     };
 
     sendForm();
-
-
 
     //команда
 
@@ -426,7 +448,6 @@ window.addEventListener('DOMContentLoaded', () => {
             item.addEventListener('mouseover', e => {
                 const target = e.target;
                 dataImg = target.src;
-                console.log(dataImg);
                 if (target.classList.contains('command__photo')) {
                     target.src = target.dataset.img;
                 }
@@ -456,7 +477,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 target.value = target.value.replace(/[^а-яА-Яё\s]/ig, '');
             }
             if (target.matches('input[name="user_message"]')) {
-                console.log(target.value);
                 target.value = target.value.replace(/[^а-яА-Яё-\s\d\!\,\.\:\"\;\?]/ig, '');
             }
             if (target.matches('input[name="user_email"]')) {
@@ -483,10 +503,11 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
                 if (target.matches('input[name="user_phone"]')) {
                     const targetStr = target.value.toString().length;
-                    console.log(targetStr);
                     //(11 <= targetStr <= 13)
                     // ((targetStr !== 11) && (targetStr !== 13))
                     if (targetStr >= 14) {
+                        target.value = '';
+                    } else if (targetStr <= 7) {
                         target.value = '';
                     }
                 }
