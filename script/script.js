@@ -377,23 +377,14 @@ window.addEventListener('DOMContentLoaded', () => {
         statusMsg.textContent = 'Тут будет сообщение';
         statusMsg.style.cssText = 'color: #ffffff;';
 
-        const postData = body => new Promise((resolve, reject) => {
-
-            const request = new XMLHttpRequest();
-            request.addEventListener('readystatechange', () => {
-                if (request.readyState !== 4) {
-                    return;
-                }
-                if (request.status === 200) {
-                    resolve();
-                } else {
-                    reject(request.statusText);
-                }
-            });
-            request.open('POST', './server.php');
-            request.setRequestHeader('Content-Type', 'application/json');
-            request.send(JSON.stringify(body));
+        const postData = body => fetch('./server.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
         });
+
         const clearInputs = () => {
             inputs.forEach(item => {
                 item.value = '';
@@ -405,7 +396,10 @@ window.addEventListener('DOMContentLoaded', () => {
             popup.style = 'display: none';
         };
 
-        const addSuccessMsg = () => {
+        const addSuccessMsg = request => {
+            if (request.status !== 200) {
+                throw new Error('status neywork not 200');
+            }
             statusMsg.textContent = successMsg;
             setTimeout(() => {
                 statusMsg.textContent = '';
