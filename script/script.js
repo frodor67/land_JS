@@ -377,23 +377,23 @@ window.addEventListener('DOMContentLoaded', () => {
         statusMsg.textContent = 'Тут будет сообщение';
         statusMsg.style.cssText = 'color: #ffffff;';
 
-        const postData = (body, outputData, errorData) => {
+        const postData = body => new Promise((resolve, reject) => {
+
             const request = new XMLHttpRequest();
             request.addEventListener('readystatechange', () => {
                 if (request.readyState !== 4) {
                     return;
                 }
                 if (request.status === 200) {
-                    outputData();
+                    resolve();
                 } else {
-                    errorData(request.status);
+                    reject(request.statusText);
                 }
             });
             request.open('POST', './server.php');
             request.setRequestHeader('Content-Type', 'application/json');
             request.send(JSON.stringify(body));
-        };
-
+        });
         const clearInputs = () => {
             inputs.forEach(item => {
                 item.value = '';
@@ -403,6 +403,23 @@ window.addEventListener('DOMContentLoaded', () => {
         const closePopup = () => {
             const popup = document.querySelector('.popup');
             popup.style = 'display: none';
+        };
+
+        const addSuccessMsg = () => {
+            statusMsg.textContent = successMsg;
+            setTimeout(() => {
+                statusMsg.textContent = '';
+                closePopup();
+            }, 3000);
+            clearInputs();
+        };
+
+        const addErrMsg = () => {
+            statusMsg.textContent = errorMsg;
+            setTimeout(() => {
+                statusMsg.textContent = '';
+            }, 3000);
+            console.error(errorMsg);
         };
 
         forms.forEach(item => {
@@ -415,22 +432,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 formData.forEach((val, key) => {
                     body[key] = val;
                 });
-                postData(body, () => {
-                    statusMsg.textContent = successMsg;
-                    setTimeout(() => {
-                        statusMsg.textContent = '';
-                        closePopup();
-                    }, 3000);
-                    clearInputs();
 
-                }, error => {
-                    statusMsg.textContent = errorMsg;
-                    setTimeout(() => {
-                        statusMsg.textContent = '';
-                    }, 3000);
-                    console.error(error);
-                });
-
+                postData(body)
+                    .then(addSuccessMsg)
+                    .catch(addErrMsg);
             });
         });
     };
