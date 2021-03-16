@@ -1,0 +1,25 @@
+{
+  "name": "landjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.js",
+  "mode": "development",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frodor67/land_JS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/frodor67/land_JS/issues"
+  },
+  "homepage": "https://github.com/frodor67/land_JS#readme",
+  "devDependencies": {
+    "webpack": "^5.25.0",
+    "webpack-cli": "^4.5.0"
+  }
+}
