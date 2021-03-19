@@ -20,6 +20,9 @@ const handler = () => {
     });
 
     inputs.forEach(elem => {
+        if (elem.getAttribute('required') === null) {
+            elem.setAttribute('required', '');
+        }
         elem.addEventListener('blur', e => {
             const target = e.target,
                 regExp1 = /^[\s\-]+|[\s\-]+$/g,
