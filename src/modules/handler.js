@@ -5,7 +5,7 @@ const handler = () => {
     document.addEventListener('input', e => {
         const target = e.target;
         if (target.matches('input[name="user_name"]')) {
-            target.value = target.value.replace(/[^а-яА-Яё\s]/ig, '');
+            target.value = target.value.replace(/[^а-яА-Яё\s{2,}]/ig, '');
         }
         if (target.matches('input[name="user_message"]')) {
             target.value = target.value.replace(/[^а-яА-Яё-\s\d\!\,\.\:\"\;\?]/ig, '');
@@ -30,7 +30,9 @@ const handler = () => {
             target.value = target.value.replace(regExp2, ' ');
             target.value = target.value.replace(regExp3, '-');
             if (target.matches('input[name="user_name"]')) {
-                target.value = target.value.replace(/(^|\s)\S/ig, match => match.toUpperCase());
+                if (target.value.toString().length < 2) {
+                    target.value = '';
+                }target.value = target.value.replace(/(^|\s)\S/ig, match => match.toUpperCase());
             }
             if (target.matches('input[name="user_phone"]')) {
                 const targetStr = target.value.toString().length;
